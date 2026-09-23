@@ -1,13 +1,18 @@
+
 import express from "express";
+
 const app = express();
- app.use(express.json());
+
+app.use(express.json());
+
 let products = [
   {
     id: 1,
     name: "Corsair HS45 Headphone",
     price: 4500,
-    imageUrl: "https://techmatched.pk/wp-content/uploads/2024/05/4-13.png",
-    desc: "A comfortable and high-quality gaming.",
+    imageUrl:
+      "https://techmatched.pk/wp-content/uploads/2024/05/4-13.png",
+    desc: "A comfortable and high-quality gaming headphone.",
   },
   {
     id: 2,
@@ -15,28 +20,58 @@ let products = [
     price: 93000,
     imageUrl:
       "https://static.wbx.pk/files/2603/Images/14-czone.com.pk-1540-12831-250122082031-2603-2261410-231124021614482.jpg",
-    desc: "A powerful graphics card from nvidia.",
+    desc: "A powerful graphics card from Nvidia.",
   },
 ];
 
-app.get("/products", (req, res)=>{
-    res.json(products);
-
+// GET all products
+app.get("/products", (req, res) => {
+  res.json(products);
 });
 
+// POST new product
 app.post("/products", (req, res) => {
   const newProduct = req.body;
+
   products.push(newProduct);
+
   res.status(201).json(newProduct);
 });
 
+// PUT update product
+app.put("/products/:id", (req, res) => {
+  const { id } = req.params;
+  const updateProduct = req.body;
 
+  const index = products.findIndex(
+    (product) => product.id === parseInt(id)
+  );
+
+  if (index !== -1) {
+    products[index] = {
+      ...products[index],
+      ...updateProduct,
+    };
+
+    res.json(products[index]);
+  } else {
+    res.status(404).json({
+      message: "Product not found",
+    });
+  }
+});
+
+// DELETE product
 app.delete("/products/:id", (req, res) => {
   const { id } = req.params;
-  products = products.filter((product) => product.id !== parseInt(id));
+
+  products = products.filter(
+    (product) => product.id !== parseInt(id)
+  );
+
   res.status(204).send();
 });
 
-app.listen(5050, ()=>{
-    console.log("Server running on port 5050")
-})
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
